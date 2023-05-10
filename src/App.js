@@ -22,6 +22,7 @@ function App() {
     showVideo: {},
     useWindowKeyDown: true,
   });
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   function importAll(r) {
     return r.keys().map(r);
@@ -30,11 +31,7 @@ function App() {
   // Fetch images from the public/images folder
   const fetchImages = () => {
     const images = [];
-    const imagesContext = require.context(
-      "../public/images",
-      false,
-      /\.(png|jpe?g|svg)$/
-    );
+    const imagesContext = require.context("../public/images", true);
 
     imagesContext.keys().forEach((imagePath) => {
       images.push({
@@ -50,9 +47,13 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchImages();
-    }, 5000);
+    }, 500);
     return () => clearInterval(interval);
   }, []);
+
+  const handleImageChange = (index) => {
+    setCurrentIndex(index);
+  };
 
   return (
     <div>
@@ -74,6 +75,8 @@ function App() {
         slideOnThumbnailOver={state.slideOnThumbnailOver}
         additionalClass="app-image-gallery"
         useWindowKeyDown={state.useWindowKeyDown}
+        startIndex={currentIndex}
+        onSlide={handleImageChange}
       />
     </div>
   );
